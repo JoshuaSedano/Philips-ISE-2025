@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+    <title>Brand and Country Selector</title>
+    <style>
+        body {
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .screen {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #upper-screen {
+            background-color: #f0f0f0;
+        }
+
+        #lower-screen {
+            background-color: #ffffff;
+            border-top: 2px solid #ccc;
+        }
+
+        .container {
+            text-align: center;
+        }
+
+        .button-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .button {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            border: none;
+            border-radius: 10px;
+            overflow: hidden;
+            width: 150px;
+            height: 150px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+
+        .button img {
+            width: 80%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        .button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        video {
+            width: 80%;
+            max-width: 800px;
+        }
+
+        img {
+            max-width: 300px;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="upper-screen" class="screen">
+        <div class="container hidden" id="image-display">
+            <img id="final-image" src="" alt="Final Selection">
+        </div>
+        <div class="container hidden" id="video-display">
+            <video id="final-video" controls>
+                <source id="video-source" src="" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
+    </div>
+    <div id="lower-screen" class="screen">
+        <div class="container" id="brand-selection">
+            <h1>Select a Brand</h1>
+            <div class="button-container">
+                <div class="button" id="brand-nike">
+                    <img src="img/nike.png" alt="Nike">
+                </div>
+                <div class="button" id="brand-puma">
+                    <img src="img/puma.png" alt="Puma">
+                </div>
+                <div class="button" id="brand-adidas">
+                    <img src="img/adidas.png" alt="Adidas">
+                </div>
+            </div>
+        </div>
+        <div class="container hidden" id="country-selection">
+            <h1>Select a Country</h1>
+            <div class="button-container">
+                <div class="button" id="country-en">
+                    <img src="img/eeuu.png" alt="English">
+                </div>
+                <div class="button" id="country-es">
+                    <img src="img/spain.png" alt="Español">
+                </div>
+                <div class="button" id="country-hl">
+                    <img src="img/holanda.png" alt="Holanda">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const brandSelection = document.getElementById('brand-selection');
+        const countrySelection = document.getElementById('country-selection');
+        const imageDisplay = document.getElementById('image-display');
+        const videoDisplay = document.getElementById('video-display');
+        const finalImage = document.getElementById('final-image');
+        const videoSource = document.getElementById('video-source');
+        const finalVideo = document.getElementById('final-video');
+
+        let selectedBrand = '';
+        let selectedCountry = '';
+        let videoCounter = 0;
+
+        document.getElementById('brand-nike').addEventListener('click', () => {
+            selectedBrand = 'nike';
+            showCountries();
+        });
+
+        document.getElementById('brand-puma').addEventListener('click', () => {
+            selectedBrand = 'puma';
+            showCountries();
+        });
+
+        document.getElementById('brand-adidas').addEventListener('click', () => {
+            selectedBrand = 'adidas';
+            showCountries();
+        });
+
+        function showCountries() {
+            brandSelection.classList.add('hidden');
+            countrySelection.classList.remove('hidden');
+        }
+
+        document.getElementById('country-en').addEventListener('click', () => {
+            selectedCountry = 'eeuu';
+            showContent();
+        });
+
+        document.getElementById('country-es').addEventListener('click', () => {
+            selectedCountry = 'spain';
+            showContent();
+        });
+
+        document.getElementById('country-hl').addEventListener('click', () => {
+            selectedCountry = 'holanda';
+            showContent();
+        });
+
+        function showContent() {
+            countrySelection.classList.add('hidden');
+            imageDisplay.classList.remove('hidden');
+            finalImage.src = `img_finals/${selectedBrand}_${selectedCountry}.webp`;
+
+            setTimeout(() => {
+                imageDisplay.classList.add('hidden');
+                videoDisplay.classList.remove('hidden');
+                showVideo(0);
+            }, 5000);
+        }
+
+        function showVideo(counter) {
+            videoCounter = counter;
+            videoSource.src = `video/${selectedBrand}_${selectedCountry}_${videoCounter}.mp4`;
+            finalVideo.load();
+            finalVideo.play();
+
+            finalVideo.onended = () => {
+                videoCounter++;
+                if (videoCounter < 2) {
+                    showVideo(videoCounter);
+                } else {
+                    resetToStart();
+                }
+            };
+        }
+
+        function resetToStart() {
+            videoDisplay.classList.add('hidden');
+            brandSelection.classList.remove('hidden');
+            videoCounter = 0;
+        }
+    </script>
+</body>
+</html>
