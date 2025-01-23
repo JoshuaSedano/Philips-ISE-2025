@@ -14,7 +14,7 @@
         }
 
         .screen {
-            flex: 1;
+            height: 50vh; /* Each screen takes exactly half the viewport height */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -69,13 +69,16 @@
         }
 
         video {
-            width: 80%;
-            max-width: 800px;
+            width: 720px;
+            height: 720px;
+            object-fit: none;
+            object-position: top;
         }
 
-        img {
-            max-width: 300px;
+        #placeholder-image {
+            width: 300px;
             height: auto;
+            object-fit: contain;
         }
     </style>
 </head>
@@ -120,6 +123,9 @@
                 </div>
             </div>
         </div>
+        <div class="container hidden" id="placeholder-display">
+            <img id="placeholder-image" src="img/philips.png" alt="Philips">
+        </div>
     </div>
 
     <script>
@@ -127,6 +133,7 @@
         const countrySelection = document.getElementById('country-selection');
         const imageDisplay = document.getElementById('image-display');
         const videoDisplay = document.getElementById('video-display');
+        const placeholderDisplay = document.getElementById('placeholder-display');
         const finalImage = document.getElementById('final-image');
         const videoSource = document.getElementById('video-source');
         const finalVideo = document.getElementById('final-video');
@@ -134,6 +141,7 @@
         let selectedBrand = '';
         let selectedCountry = '';
         let videoCounter = 0;
+        let imgCounter =0;
 
         document.getElementById('brand-nike').addEventListener('click', () => {
             selectedBrand = 'nike';
@@ -172,8 +180,9 @@
 
         function showContent() {
             countrySelection.classList.add('hidden');
+            placeholderDisplay.classList.remove('hidden');
             imageDisplay.classList.remove('hidden');
-            finalImage.src = `img_finals/${selectedBrand}_${selectedCountry}.webp`;
+            finalImage.src = `img_finals/${selectedBrand}_${selectedCountry}_${imgCounter}.webp`;
 
             setTimeout(() => {
                 imageDisplay.classList.add('hidden');
@@ -187,6 +196,7 @@
             videoSource.src = `video/${selectedBrand}_${selectedCountry}_${videoCounter}.mp4`;
             finalVideo.load();
             finalVideo.play();
+            
 
             finalVideo.onended = () => {
                 videoCounter++;
@@ -200,6 +210,7 @@
 
         function resetToStart() {
             videoDisplay.classList.add('hidden');
+            placeholderDisplay.classList.add('hidden');
             brandSelection.classList.remove('hidden');
             videoCounter = 0;
         }
