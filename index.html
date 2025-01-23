@@ -1,8 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
     <title>Brand and Country Selector</title>
     <style>
         body {
@@ -11,10 +16,13 @@
             flex-direction: column;
             height: 100vh;
             overflow: hidden;
+            font-family: 'Noto Sans', sans-serif;
+            /* Aplicar la fuente a todo el cuerpo */
         }
 
         .screen {
-            height: 50vh; /* Each screen takes exactly half the viewport height */
+            height: 50vh;
+            /* Each screen takes exactly half the viewport height */
             display: flex;
             justify-content: center;
             align-items: center;
@@ -29,13 +37,22 @@
             border-top: 2px solid #ccc;
         }
 
+        .texto {
+            font-family: 'Noto Sans', sans-serif;
+            font-optical-sizing: auto;
+            font-weight: <weight>;
+            font-style: normal;
+            font-variation-settings: "wdth" 100;
+        }
+
         .container {
             text-align: center;
         }
 
         .button-container {
             display: flex;
-            justify-content: center;
+            justify-content: space-around;
+            /* Distribuye mejor los iconos */
             gap: 20px;
         }
 
@@ -80,17 +97,62 @@
             height: auto;
             object-fit: contain;
         }
+
+        #philips-logo {
+            width: 250px;
+            height: auto;
+            object-fit: contain;
+        }
+
+        #loading-icon {
+            width: 100px;
+            height: 100px;
+            animation: pulse 3s infinite;
+            /* Hacer la animación más lenta */
+        }
+
+        #loading-text {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #333;
+            display: block;
+            /* Asegurarse de que el texto sea visible */
+        }
+
+        #brand-selection {
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
     </style>
 </head>
+
 <body>
     <div id="upper-screen" class="screen">
+        <div class="container" id="philips-display">
+            <img id="philips-logo" src="img/philips.png" alt="Philips">
+        </div>
+        <div class="container hidden" id="loading-display">
+            <img id="loading-icon" src="img/admira-icon_green.svg" alt="Loading">
+            <div id="loading-text">Wait while we generate your image</div>
+        </div>
         <div class="container hidden" id="image-display">
             <img id="final-image" src="" alt="Final Selection">
         </div>
         <div class="container hidden" id="video-display">
-            <video id="final-video" controls>
+            <video id="final-video">
                 <source id="video-source" src="" type="video/mp4">
-                Your browser does not support the video tag.
             </video>
         </div>
     </div>
@@ -137,11 +199,23 @@
         const finalImage = document.getElementById('final-image');
         const videoSource = document.getElementById('video-source');
         const finalVideo = document.getElementById('final-video');
+        const philipsDisplay = document.getElementById('philips-display');
+        const loadingDisplay = document.getElementById('loading-display');
+
+        // Contadores por categoría
+        let nikeeeuu = 0;
+        let nikespain = 0;
+        let nikeholanda = 0;
+        let pumaeeuu = 0;
+        let pumaspain = 0;
+        let pumaholanda = 0;
+        let adidaseeuu = 0;
+        let adidasspain = 0;
+        let adidasholanda = 0;
 
         let selectedBrand = '';
         let selectedCountry = '';
         let videoCounter = 0;
-        let imgCounter =0;
 
         document.getElementById('brand-nike').addEventListener('click', () => {
             selectedBrand = 'nike';
@@ -181,14 +255,73 @@
         function showContent() {
             countrySelection.classList.add('hidden');
             placeholderDisplay.classList.remove('hidden');
-            imageDisplay.classList.remove('hidden');
-            finalImage.src = `img_finals/${selectedBrand}_${selectedCountry}_${imgCounter}.webp`;
+            loadingDisplay.classList.remove('hidden');
+            philipsDisplay.classList.add('hidden');
 
             setTimeout(() => {
-                imageDisplay.classList.add('hidden');
-                videoDisplay.classList.remove('hidden');
-                showVideo(0);
-            }, 5000);
+                loadingDisplay.classList.add('hidden');
+                imageDisplay.classList.remove('hidden');
+                finalImage.src = `img_finals/${selectedBrand}_${selectedCountry}_${getCounter()}.webp`;
+
+                setTimeout(() => {
+                    imageDisplay.classList.add('hidden');
+                    videoDisplay.classList.remove('hidden');
+                    showVideo(0);
+                }, 5000);
+            }, 5000); // Tiempo de carga antes de mostrar la imagen
+
+            incrementCounter();
+        }
+
+        function getCounter() {
+            if (selectedBrand === 'nike' && selectedCountry === 'eeuu') return nikeeeuu;
+            if (selectedBrand === 'nike' && selectedCountry === 'spain') return nikespain;
+            if (selectedBrand === 'nike' && selectedCountry === 'holanda') return nikeholanda;
+            if (selectedBrand === 'puma' && selectedCountry === 'eeuu') return pumaeeuu;
+            if (selectedBrand === 'puma' && selectedCountry === 'spain') return pumaspain;
+            if (selectedBrand === 'puma' && selectedCountry === 'holanda') return pumaholanda;
+            if (selectedBrand === 'adidas' && selectedCountry === 'eeuu') return adidaseeuu;
+            if (selectedBrand === 'adidas' && selectedCountry === 'spain') return adidasspain;
+            if (selectedBrand === 'adidas' && selectedCountry === 'holanda') return adidasholanda;
+        }
+
+        function incrementCounter() {
+            if (selectedBrand === 'nike' && selectedCountry === 'eeuu') {
+                nikeeeuu++;
+                if (nikeeeuu >= 9) nikeeeuu = 0;
+            }
+            if (selectedBrand === 'nike' && selectedCountry === 'spain') {
+                nikespain++;
+                if (nikespain >= 9) nikespain = 0;
+            }
+            if (selectedBrand === 'nike' && selectedCountry === 'holanda') {
+                nikeholanda++;
+                if (nikeholanda >= 9) nikeholanda = 0;
+            }
+            if (selectedBrand === 'puma' && selectedCountry === 'eeuu') {
+                pumaeeuu++;
+                if (pumaeeuu >= 9) pumaeeuu = 0;
+            }
+            if (selectedBrand === 'puma' && selectedCountry === 'spain') {
+                pumaspain++;
+                if (pumaspain >= 9) pumaspain = 0;
+            }
+            if (selectedBrand === 'puma' && selectedCountry === 'holanda') {
+                pumaholanda++;
+                if (pumaholanda >= 9) pumaholanda = 0;
+            }
+            if (selectedBrand === 'adidas' && selectedCountry === 'eeuu') {
+                adidaseeuu++;
+                if (adidaseeuu >= 9) adidaseeuu = 0;
+            }
+            if (selectedBrand === 'adidas' && selectedCountry === 'spain') {
+                adidasspain++;
+                if (adidasspain >= 9) adidasspain = 0;
+            }
+            if (selectedBrand === 'adidas' && selectedCountry === 'holanda') {
+                adidasholanda++;
+                if (adidasholanda >= 9) adidasholanda = 0;
+            }
         }
 
         function showVideo(counter) {
@@ -196,7 +329,6 @@
             videoSource.src = `video/${selectedBrand}_${selectedCountry}_${videoCounter}.mp4`;
             finalVideo.load();
             finalVideo.play();
-            
 
             finalVideo.onended = () => {
                 videoCounter++;
@@ -211,9 +343,11 @@
         function resetToStart() {
             videoDisplay.classList.add('hidden');
             placeholderDisplay.classList.add('hidden');
+            philipsDisplay.classList.remove('hidden');
             brandSelection.classList.remove('hidden');
             videoCounter = 0;
         }
     </script>
 </body>
+
 </html>
