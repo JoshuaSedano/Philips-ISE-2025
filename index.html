@@ -215,8 +215,8 @@
 
         let selectedBrand = '';
         let selectedCountry = '';
-        let videoCounter = 0;
-
+        let videoCounter = 5;
+        let numVideos = 0;
         document.getElementById('brand-nike').addEventListener('click', () => {
             selectedBrand = 'nike';
             showCountries();
@@ -266,7 +266,7 @@
                 setTimeout(() => {
                     imageDisplay.classList.add('hidden');
                     videoDisplay.classList.remove('hidden');
-                    showVideo(0);
+                    showVideo(videoCounter);
                 }, 5000);
             }, 5000); // Tiempo de carga antes de mostrar la imagen
 
@@ -324,29 +324,49 @@
             }
         }
 
-        function showVideo(counter) {
-            videoCounter = counter;
-            videoSource.src = `video/${selectedBrand}_${selectedCountry}_${videoCounter}.mp4`;
-            finalVideo.load();
-            finalVideo.play();
 
-            finalVideo.onended = () => {
-                videoCounter++;
-                if (videoCounter < 2) {
-                    showVideo(videoCounter);
-                } else {
-                    resetToStart();
-                }
-            };
-        }
+function showVideo(counter) {
+    videoCounter = counter; // Asigna el contador actual al global
+    console.log(`Mostrando video ${videoCounter}`);
+    videoSource.src = `video/${selectedBrand}_${selectedCountry}_${videoCounter}.mp4`; // Ruta del video
+    finalVideo.load();
+    finalVideo.play();
 
-        function resetToStart() {
-            videoDisplay.classList.add('hidden');
-            placeholderDisplay.classList.add('hidden');
-            philipsDisplay.classList.remove('hidden');
-            brandSelection.classList.remove('hidden');
-            videoCounter = 0;
+    // Evento cuando finaliza el video
+    finalVideo.onended = () => {
+        videoCounter++; // Incrementa el contador global de videos
+        numVideos++; // Incrementa el contador de iteraciones de videos
+
+        if (videoCounter > 9) videoCounter = 0; // Reinicia el contador si pasa de 9
+
+        if (numVideos < 2) {
+            // Si aún no se han reproducido 2 videos, continúa con el siguiente
+            console.log(`Reproduciendo el siguiente video: ${videoCounter}`);
+            showVideo(videoCounter);
+        } else {
+            // Si ya se han reproducido 2 videos, resetea
+            console.log("Fin de iteración de videos, regresando al inicio.");
+            resetVideo();
         }
+    };
+}
+
+function resetVideo() {
+    console.log("Reseteando video...");
+    numVideos = 0
+    resetToStart(); // Regresa a la pantalla inicial
+}
+
+function resetToStart() {
+    console.log("Regresando al inicio...");
+    videoDisplay.classList.add('hidden');
+    placeholderDisplay.classList.add('hidden');
+    philipsDisplay.classList.remove('hidden');
+    brandSelection.classList.remove('hidden');
+}
+
+
     </script>
 </body>
+
 </html>
